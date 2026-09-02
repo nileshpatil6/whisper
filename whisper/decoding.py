@@ -618,8 +618,11 @@ class DecodingTask:
         if suppress_tokens is None:
             suppress_tokens = []
         elif isinstance(suppress_tokens, str):
-            # interpret the empty string as an empty list
-            suppress_tokens = [int(t) for t in suppress_tokens.split(",") if t]
+            # interpret the empty string as an empty list; any other string is
+            # still parsed strictly, so a malformed value such as "1,,2" raises
+            suppress_tokens = (
+                [int(t) for t in suppress_tokens.split(",")] if suppress_tokens else []
+            )
         else:
             # accept any iterable of ints; copying also makes sure the
             # extend() calls below never modify the caller's list

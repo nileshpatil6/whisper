@@ -45,3 +45,11 @@ def test_suppress_tokens_default_includes_non_speech_tokens():
     suppress, tokenizer = get_suppress_tokens(suppress_tokens="-1")
     assert set(tokenizer.non_speech_tokens) <= set(suppress)
     assert -1 not in suppress
+
+
+@pytest.mark.parametrize("value", ["1,,2", ",1", "1,", "1,x"])
+def test_suppress_tokens_rejects_malformed_strings(value):
+    # only the empty string means "no tokens"; anything else is parsed
+    # strictly, so an empty or non-numeric component still raises
+    with pytest.raises(ValueError):
+        get_suppress_tokens(suppress_tokens=value)
